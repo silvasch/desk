@@ -89,7 +89,7 @@ pub fn run() -> Result<(), Error> {
             };
 
             let note = Note::new(
-                &format!("{}/{}.toml", notes_dir_path, name),
+                &format!("{}/{}", notes_dir_path, name),
                 chrono::Local::now(),
                 description.as_deref(),
             );
