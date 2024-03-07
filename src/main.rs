@@ -1,3 +1,6 @@
 fn main() {
-    println!("Hello, world!");
+    match desk::run() {
+        Ok(()) => {}
+        Err(e) => eprintln!("{}", e),
+    }
 }
