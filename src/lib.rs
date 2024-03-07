@@ -112,6 +112,18 @@ pub fn run() -> Result<(), Error> {
 
             println!("{}", note.read_content()?);
 
+            if args.info {
+                println!("Accessing note '{}'", name);
+                println!(
+                    "Description: '{}'",
+                    note.description.clone().unwrap_or_default()
+                );
+                println!(
+                    "Created: {}",
+                    note.creation_date.format("%Y-%m-%d %H:%M:%S")
+                );
+            }
+
             app.set_last_used_note(&name);
         }
     }
