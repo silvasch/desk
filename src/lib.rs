@@ -108,9 +108,14 @@ pub fn run() -> Result<(), Error> {
                 None => return Ok(()),
             };
 
-            let note = app.get_note(&name)?;
+            let mut note = app.get_note(&name)?.clone();
 
-            println!("{}", note.read_content()?);
+            if let Some(description) = args.description {
+                note.description = Some(description);
+            }
+
+            let content = note.read_content()?;
+            println!("{}", content);
 
             if args.info {
                 println!("Accessing note '{}'", name);
@@ -125,6 +130,7 @@ pub fn run() -> Result<(), Error> {
             }
 
             app.set_last_used_note(&name);
+            app.set_note(&name, note, &content, true)?;
         }
     }
 
