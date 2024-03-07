@@ -109,7 +109,10 @@ pub fn run() -> Result<(), Error> {
             };
 
             let note = app.get_note(&name)?;
+
             println!("{}", note.read_content()?);
+
+            app.set_last_used_note(&name);
         }
     }
 

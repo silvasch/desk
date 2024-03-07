@@ -37,6 +37,10 @@ impl App {
         })
     }
 
+    pub fn set_last_used_note(&mut self, name: &str) {
+        self.state.last_used_note = Some(name.to_string());
+    }
+
     pub fn list_notes(&self) -> Vec<&String> {
         self.state.notes.keys().collect()
     }
