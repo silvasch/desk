@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use chrono::Local;
 use clap::Parser;
 
 mod app;
@@ -91,6 +92,7 @@ pub fn run() -> Result<(), Error> {
             let note = Note::new(
                 &format!("{}/{}", notes_dir_path, name),
                 chrono::Local::now(),
+                None,
                 description.as_deref(),
             );
 
@@ -110,12 +112,13 @@ pub fn run() -> Result<(), Error> {
 
             let mut note = app.get_note(&name)?.clone();
 
+            let content = note.read_content()?;
+
             if let Some(description) = args.description {
                 note.description = Some(description);
+            } else {
+                println!("{}", content);
             }
-
-            let content = note.read_content()?;
-            println!("{}", content);
 
             if args.info {
                 println!("Accessing note '{}'", name);
@@ -127,7 +130,16 @@ pub fn run() -> Result<(), Error> {
                     "Created: {}",
                     note.creation_date.format("%Y-%m-%d %H:%M:%S")
                 );
+                println!(
+                    "Last accessed: {}",
+                    match note.last_accessed_date {
+                        Some(last_accessed_date) => last_accessed_date.to_string(),
+                        None => "never".to_string(),
+                    }
+                )
             }
+
+            note.last_accessed_date = Some(Local::now());
 
             app.set_last_used_note(&name);
             app.set_note(&name, note, &content, true)?;
