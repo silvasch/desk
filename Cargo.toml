@@ -10,6 +10,7 @@ description = "Quickly store data on the command line"
 atty = "0.2.14"
 chrono = { version = "0.4.35", features = ["serde"] }
 clap = { version = "4.5.2", features = ["cargo", "derive"] }
+rand = "0.8.5"
 serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.10"
 xdg = "2.5.2"

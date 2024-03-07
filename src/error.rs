@@ -6,11 +6,25 @@ pub enum Error {
         given_type: String,
     },
 
+    FileRead {
+        file_path: String,
+        io_error: std::io::Error,
+    },
+
     NoteAlreadyExists {
         name: String,
     },
     NoteNotFound {
         name: String,
+    },
+
+    NoteRead {
+        file_path: String,
+        io_error: std::io::Error,
+    },
+    NoteWrite {
+        file_path: String,
+        io_error: std::io::Error,
     },
 
     StateFileNotFound {
@@ -44,11 +58,28 @@ impl fmt::Display for Error {
                 InvalidTypeArgument { given_type } =>
                     format!("'{}' is not a valid type", given_type),
 
+                FileRead {
+                    file_path,
+                    io_error,
+                } => format!("failed to read the file '{}': {}", file_path, io_error),
+
                 NoteAlreadyExists { name } => format!(
                     "a note with the name '{}' already exists. use the '-f' option to overwrite it",
                     name
                 ),
                 NoteNotFound { name } => format!("could not find a note with the name '{}'", name),
+
+                NoteRead {
+                    file_path,
+                    io_error,
+                } => format!("failed read the note in '{}': {}", file_path, io_error),
+                NoteWrite {
+                    file_path,
+                    io_error,
+                } => format!(
+                    "failed to store the notes content in '{}': {}",
+                    file_path, io_error
+                ),
 
                 StateFileNotFound { file_path } => format!(
                     "tried to load the state from a file that does not exist: '{}'",

@@ -1,6 +1,8 @@
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
+use crate::Error;
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Note {
     /// Path to the file that contains the content of the note
@@ -22,5 +24,19 @@ impl Note {
             creation_date,
             description: description.map(str::to_string),
         }
+    }
+
+    pub fn read_content(&self) -> Result<String, Error> {
+        std::fs::read_to_string(&self.content_file_path).map_err(|e| Error::NoteRead {
+            file_path: self.content_file_path.clone(),
+            io_error: e,
+        })
+    }
+
+    pub fn write_content(&self, content: &str) -> Result<(), Error> {
+        std::fs::write(&self.content_file_path, content).map_err(|e| Error::NoteWrite {
+            file_path: self.content_file_path.clone(),
+            io_error: e,
+        })
     }
 }

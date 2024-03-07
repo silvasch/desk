@@ -9,14 +9,24 @@ impl App {
         Self { state }
     }
 
-    pub fn set_note(&mut self, name: &str, note: Note, force: bool) -> Result<(), Error> {
+    pub fn set_note(
+        &mut self,
+        name: &str,
+        note: Note,
+        content: &str,
+        force: bool,
+    ) -> Result<(), Error> {
         if !force && self.state.notes.contains_key(name) {
             return Err(Error::NoteAlreadyExists {
                 name: name.to_string(),
             });
         }
 
+        note.write_content(content)?;
+
         self.state.notes.insert(name.to_string(), note);
+
+        self.state.last_used_note = Some(name.to_string());
 
         Ok(())
     }
