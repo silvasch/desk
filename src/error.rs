@@ -6,18 +6,30 @@ pub enum Error {
         given_type: String,
     },
 
-    NoteFileNotFound {
+    NoteAlreadyExists {
+        name: String,
+    },
+    NoteNotFound {
+        name: String,
+    },
+
+    StateFileNotFound {
         file_path: String,
     },
-    FailedToSaveNote {
+    FailedToSaveState {
         file_path: String,
         io_error: std::io::Error,
     },
-    Deserialization {
+    StateDeserialization {
+        file_path: String,
         serde_error: toml::de::Error,
     },
-    Serialization {
+    StateSerialization {
         serde_error: toml::ser::Error,
+    },
+
+    XdgError {
+        xdg_error: xdg::BaseDirectoriesError,
     },
 }
 
@@ -32,16 +44,35 @@ impl fmt::Display for Error {
                 InvalidTypeArgument { given_type } =>
                     format!("'{}' is not a valid type", given_type),
 
-                NoteFileNotFound { file_path } => format!(
-                    "tried to load a note from a file that does not exist: '{}'",
+                NoteAlreadyExists { name } => format!(
+                    "a note with the name '{}' already exists. use the '-f' option to overwrite it",
+                    name
+                ),
+                NoteNotFound { name } => format!("could not find a note with the name '{}'", name),
+
+                StateFileNotFound { file_path } => format!(
+                    "tried to load the state from a file that does not exist: '{}'",
                     file_path
                 ),
-                FailedToSaveNote { file_path, io_error } => format!("failed to save the note to '{}': {}", file_path, io_error.to_string().to_lowercase()),
-                Deserialization { serde_error } => format!(
-                    "tried to load a note from a file that does not contain valid toml: {}",
-                    serde_error
+                FailedToSaveState {
+                    file_path,
+                    io_error,
+                } => format!(
+                    "failed to save the state to '{}': {}",
+                    file_path,
+                    io_error.to_string().to_lowercase()
                 ),
-                Serialization { serde_error } => format!("failed to store the note on disk, because the data could not be converted to toml: {}", serde_error)
+                StateDeserialization {
+                    file_path,
+                    serde_error,
+                } => format!(
+                    "failed to deserialize the state file at '{}': {}",
+                    file_path, serde_error
+                ),
+                StateSerialization { serde_error } =>
+                    format!("failed to serialize the state: {}", serde_error),
+
+                XdgError { xdg_error } => format!("xdg error: {}", xdg_error),
             }
         )
     }
@@ -49,14 +80,14 @@ impl fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-impl From<toml::de::Error> for Error {
-    fn from(value: toml::de::Error) -> Self {
-        Self::Deserialization { serde_error: value }
+impl From<toml::ser::Error> for Error {
+    fn from(value: toml::ser::Error) -> Self {
+        Self::StateSerialization { serde_error: value }
     }
 }
 
-impl From<toml::ser::Error> for Error {
-    fn from(value: toml::ser::Error) -> Self {
-        Self::Serialization { serde_error: value }
+impl From<xdg::BaseDirectoriesError> for Error {
+    fn from(value: xdg::BaseDirectoriesError) -> Self {
+        Self::XdgError { xdg_error: value }
     }
 }

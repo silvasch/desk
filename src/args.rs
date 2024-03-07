@@ -18,8 +18,16 @@ pub struct Args {
     pub info: bool,
 
     /// A short description describing the note. If the note type is a file, by default the description is set to it's path.
-    #[arg(long)]
+    #[arg(long = "desc")]
     pub description: Option<String>,
+
+    /// Overwrite the previous note, if it exists
+    #[arg(short, long)]
+    pub force: bool,
+
+    /// List all notes and exit
+    #[arg(short, long)]
+    pub list: bool,
 }
 
 #[derive(Copy, Clone, Debug, Default, ValueEnum)]
