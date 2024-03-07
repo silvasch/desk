@@ -1,5 +1,5 @@
 fn main() {
-    match desk::run() {
+    match notiz::run() {
         Ok(()) => {}
         Err(e) => eprintln!("{}", e),
     }
