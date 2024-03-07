@@ -3,7 +3,7 @@ name = "notiz"
 version = "1.0.0"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/silvasch/desk"
+repository = "https://github.com/silvasch/notiz"
 description = "Quickly store data on the command line"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
