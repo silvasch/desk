@@ -1,6 +1,9 @@
 # notiz
 
-Notiz (pronounced `/noˈtiːts/`, the german word for `note`) is a tool that allows to to quickly save some text for later.
+Notiz (pronounced `/noˈtiːts/`, the german word for note) is a tool that allows to to quickly save some text for later.
+
+- [Usage](#usage)
+- [Installation](#installation)
 
 ## Usage
 
