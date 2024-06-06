@@ -133,7 +133,7 @@ pub fn run() -> Result<(), Error> {
                 println!(
                     "Last accessed: {}",
                     match note.last_accessed_date {
-                        Some(last_accessed_date) => last_accessed_date.to_string(),
+                        Some(last_accessed_date) => last_accessed_date.format("%Y-%m-%d %H:%M:%S").to_string(),
                         None => "never".to_string(),
                     }
                 )
