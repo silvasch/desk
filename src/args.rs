@@ -1,4 +1,4 @@
-use clap::{Parser, ValueEnum};
+use clap::Parser;
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -8,10 +8,6 @@ pub struct Args {
     /// When inspecting notes, the last created/referenced name is used by default.
     #[arg(short, long)]
     pub name: Option<String>,
-
-    /// The type of the note.
-    #[arg(short, long, default_value_t = NoteType::default())]
-    pub ty: NoteType,
 
     /// Don't just print the value, but provide more information about it, like the origin and creation date.
     #[arg(short, long)]
@@ -28,28 +24,6 @@ pub struct Args {
     /// List all notes and exit
     #[arg(short, long)]
     pub list: bool,
-}
-
-#[derive(Copy, Clone, Debug, Default, ValueEnum)]
-pub enum NoteType {
-    /// Raw text
-    #[default]
-    Raw,
-    /// A file
-    File,
-}
-
-impl std::fmt::Display for NoteType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                NoteType::Raw => "raw",
-                NoteType::File => "file",
-            }
-        )
-    }
 }
 
 pub fn get_piped_stdin() -> Option<String> {

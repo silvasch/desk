@@ -71,23 +71,7 @@ pub fn run() -> Result<(), Error> {
         Some(stdin) => {
             let name = args.name.unwrap_or(generate_name(app.list_notes()));
 
-            let mut description = args.description;
-
-            let content = match args.ty {
-                args::NoteType::Raw => stdin,
-                args::NoteType::File => {
-                    let content = std::fs::read_to_string(&stdin).map_err(|e| Error::FileRead {
-                        file_path: stdin.clone(),
-                        io_error: e,
-                    })?;
-
-                    if description.is_none() {
-                        description = Some(stdin);
-                    }
-
-                    content
-                }
-            };
+            let description = args.description;
 
             let note = Note::new(
                 &format!("{}/{}", notes_dir_path, name),
@@ -100,7 +84,7 @@ pub fn run() -> Result<(), Error> {
                 .place_data_file(format!("notes/{}.toml", name))
                 .expect("this was already called once before");
 
-            app.set_note(&name, note, &content, args.force)?;
+            app.set_note(&name, note, &stdin, args.force)?;
 
             println!("Stored the data in the note '{}'", name);
         }
@@ -133,7 +117,8 @@ pub fn run() -> Result<(), Error> {
                 println!(
                     "Last accessed: {}",
                     match note.last_accessed_date {
-                        Some(last_accessed_date) => last_accessed_date.format("%Y-%m-%d %H:%M:%S").to_string(),
+                        Some(last_accessed_date) =>
+                            last_accessed_date.format("%Y-%m-%d %H:%M:%S").to_string(),
                         None => "never".to_string(),
                     }
                 )
